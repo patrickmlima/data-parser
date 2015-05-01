@@ -78,23 +78,16 @@ public class DataParser {
 		
 		boolean firstLine =  true;
 		int turn = 0;
-		int counter = 0;
 		while((line = fileReader.readLine()) != null) {
 			vLine = line.split(";");
 			if(turn == 0) {
-				System.out.println("-----00h-----" + counter);
-				printVector(vLine);
-				
 				tempMax = vLine[vLine.length-4];
 				relMeanHumidity = vLine[vLine.length-2];
 				windMeanVelocity = vLine[vLine.length-1];
 				++turn;
-			} else {
-				System.out.println("12h");
-				printVector(vLine);
-				
-				rainFall = vLine[vLine.length-5];
-				tempMin = vLine[vLine.length-3];
+			} else {				
+				tempMin = vLine[vLine.length-1];
+				rainFall = vLine[vLine.length-3];
 				
 				if(!firstLine) {
 					bwIFile.write("\n");
@@ -103,11 +96,9 @@ public class DataParser {
 					firstLine = false;
 				
 				bwIFile.write(tempMax + ";" + tempMin + ";" + relMeanHumidity + ";" + windMeanVelocity);
-				bwOFile.write("\n" + rainFall + ";");
+				bwOFile.write(rainFall + ";");
 				turn = 0;
 			}
-			++counter;
-			sc.nextLine();
 		}
 		bwIFile.close();
 		bwOFile.close();
