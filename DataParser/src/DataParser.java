@@ -118,6 +118,7 @@ public class DataParser {
 		parser.deleteInvalidLines();
 		parser.checkNewFile();
 		parser.createDefinitiveFiles();
+		System.out.println("Processamento do arquivo finalizado.");
 	}
 
 }
