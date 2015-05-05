@@ -24,6 +24,7 @@ public class DataParser {
 		String line0 = null;
 		String vLine[];
 		String date = null;
+		int counter = 0;
 		int turn = 0;
 		boolean firstLine = true;
 		while((line = fileReader.readLine()) != null) {
@@ -44,12 +45,14 @@ public class DataParser {
 				} else {
 					date = vLine[1];
 					line0 = line;
+					++counter;
 				}
 			}
 			
 		}
 		fileReader.close();
 		fileWriter.close();
+		System.out.println("Número de dados inválidos: "+counter);
 	}
 	
 	public void checkNewFile() {
@@ -75,7 +78,7 @@ public class DataParser {
 		String relMeanHumidity = null;
 		String windMeanVelocity = null;
 		String vLine[];
-		
+		int counter = 0;
 		boolean firstLine =  true;
 		int turn = 0;
 		while((line = fileReader.readLine()) != null) {
@@ -89,20 +92,23 @@ public class DataParser {
 				tempMin = vLine[vLine.length-1];
 				rainFall = vLine[vLine.length-3];
 				
-				if(!firstLine) {
-					bwIFile.write("\n");
-					bwOFile.write("\n");
-				} else
-					firstLine = false;
-				
-				bwIFile.write(tempMax + ";" + tempMin + ";" + relMeanHumidity + ";" + windMeanVelocity);
-				bwOFile.write(rainFall + ";");
+				if(!tempMin.isEmpty() && !tempMax.isEmpty() && !relMeanHumidity.isEmpty() && !windMeanVelocity.isEmpty() && !rainFall.isEmpty()) {
+					if(!firstLine) {
+						bwIFile.write("\n");
+						bwOFile.write("\n");
+					} else
+						firstLine = false;
+					bwIFile.write(tempMax + ";" + tempMin + ";" + relMeanHumidity + ";" + windMeanVelocity);
+					bwOFile.write(rainFall + ";");
+				} else 
+					++counter;
 				turn = 0;
 			}
 		}
 		bwIFile.close();
 		bwOFile.close();
 		fileReader.close();	
+		System.out.println("Quantidade de dados incompletos: " + counter);
 	}
 	
 	public void printVector(String v[]) {
