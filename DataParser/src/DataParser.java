@@ -3,7 +3,11 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+
 import dataparser.check.DataCheck;
+
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
 
 
@@ -20,6 +24,7 @@ public class DataParser {
 	public void deleteInvalidLines() throws IOException {
 		BufferedReader fileReader = new BufferedReader(new FileReader(filePath));
 		BufferedWriter fileWriter = new BufferedWriter(new FileWriter(newFilePath));
+		LinkedList<String> invalidDataDates = new LinkedList<String>();
 		String line = null;
 		String line0 = null;
 		String vLine[];
@@ -43,6 +48,7 @@ public class DataParser {
 					fileWriter.write(line0);
 					fileWriter.write("\n" + line);
 				} else {
+					invalidDataDates.add(date);
 					date = vLine[1];
 					line0 = line;
 					++counter;
@@ -52,7 +58,13 @@ public class DataParser {
 		}
 		fileReader.close();
 		fileWriter.close();
-		System.out.println("Número de dados inválidos: "+counter);
+		System.out.println("Número de dados inválidos: "+counter +"---"+invalidDataDates.size());
+		System.out.println("------------------------------------------");
+		System.out.println("Datas com dados inválidos:");
+		for(String str : invalidDataDates) {
+			System.out.println(str);
+		}
+		System.out.println("------------------------------------------\n");
 	}
 	
 	public void checkNewFile() {
@@ -66,6 +78,16 @@ public class DataParser {
 	}
 	
 	public void createDefinitiveFiles() throws IOException {
+		LinkedList<String> tMax,tMin,relHum,windVel;
+		tMax = new LinkedList<String>();
+		tMin = new LinkedList<String>();
+		relHum = new LinkedList<String>();
+		windVel = new LinkedList<String>();
+		
+		LinkedList<LinkedList<String>> inputs = new LinkedList<LinkedList<String>>();
+		LinkedList<String> outputs = new LinkedList<String>();
+		LinkedList<String> invalidDataDates = new LinkedList<String>();
+		
 		BufferedReader fileReader = new BufferedReader(new FileReader(newFilePath));
 		
 		BufferedWriter bwIFile = new BufferedWriter(new FileWriter("dados_clima_input.txt"));
@@ -92,23 +114,57 @@ public class DataParser {
 				tempMin = vLine[vLine.length-1];
 				rainFall = vLine[vLine.length-3];
 				
-				if(!tempMin.isEmpty() && !tempMax.isEmpty() && !relMeanHumidity.isEmpty() && !windMeanVelocity.isEmpty() && !rainFall.isEmpty()) {
-					if(!firstLine) {
-						bwIFile.write("\n");
-						bwOFile.write("\n");
-					} else
-						firstLine = false;
-					bwIFile.write(tempMax + ";" + tempMin + ";" + relMeanHumidity + ";" + windMeanVelocity);
-					bwOFile.write(rainFall + ";");
-				} else 
+				if((!tempMin.isEmpty() && !tempMax.isEmpty()) && (!relMeanHumidity.isEmpty() && !windMeanVelocity.isEmpty()) && !rainFall.isEmpty()) {
+					tMin.add(tempMin);
+					tMax.add(tempMax);
+					relHum.add(relMeanHumidity);
+					windVel.add(windMeanVelocity);
+					outputs.add(rainFall);
+//					if(!firstLine) {
+//						bwIFile.write("\n");
+//						bwOFile.write("\n");
+//					} else
+//						firstLine = false;
+//					bwIFile.write(tempMax + " " + tempMin + " " + relMeanHumidity + " " + windMeanVelocity + ";");
+//					bwOFile.write(rainFall + ";");
+				} else { 
 					++counter;
+					invalidDataDates.add(vLine[1]);
+				}
 				turn = 0;
 			}
 		}
+		inputs.add(tMin);
+		inputs.add(tMax);
+		inputs.add(relHum);
+		inputs.add(windVel);
+		for(LinkedList<String> l : inputs) {
+			for(int i = 0; i < l.size(); i++) {
+				bwIFile.write(l.get(i));
+				if((i+1)!=l.size())
+					bwIFile.write(" ");
+				else
+					bwIFile.write(";\n");
+			}
+		}
+		for(int i = 0; i < outputs.size(); i++) {
+			bwOFile.write(outputs.get(i));
+			if((i+1)!=outputs.size())
+				bwOFile.write(" ");
+			else
+				bwOFile.write(";\n");
+		}
+		
 		bwIFile.close();
 		bwOFile.close();
 		fileReader.close();	
 		System.out.println("Quantidade de dados incompletos: " + counter);
+		System.out.println("----------------------------------------");
+		System.out.println("datas com dados incompletos:");
+		for(String str : invalidDataDates) {
+			System.out.println(str);
+		}
+		System.out.println("-----------------------------------------");
 	}
 	
 	public void printVector(String v[]) {
