@@ -7,7 +7,6 @@ import java.io.IOException;
 import dataparser.check.DataCheck;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Scanner;
 
 
@@ -87,6 +86,7 @@ public class DataParser {
 		LinkedList<LinkedList<String>> inputs = new LinkedList<LinkedList<String>>();
 		LinkedList<String> outputs = new LinkedList<String>();
 		LinkedList<String> invalidDataDates = new LinkedList<String>();
+		LinkedList<Integer> aYearIndexes = new LinkedList<Integer>();
 		
 		BufferedReader fileReader = new BufferedReader(new FileReader(newFilePath));
 		
@@ -101,7 +101,9 @@ public class DataParser {
 		String windMeanVelocity = null;
 		String vLine[];
 		int counter = 0;
-		boolean firstLine =  true;
+		int indexes = 0;
+		String aYear = "31/12/2014";
+//		boolean firstLine =  true;
 		int turn = 0;
 		while((line = fileReader.readLine()) != null) {
 			vLine = line.split(";");
@@ -120,6 +122,10 @@ public class DataParser {
 					relHum.add(relMeanHumidity);
 					windVel.add(windMeanVelocity);
 					outputs.add(rainFall);
+					if(vLine[1].contains(aYear)) {
+						aYearIndexes.add(indexes);
+					}
+					++indexes;
 //					if(!firstLine) {
 //						bwIFile.write("\n");
 //						bwOFile.write("\n");
@@ -165,6 +171,12 @@ public class DataParser {
 			System.out.println(str);
 		}
 		System.out.println("-----------------------------------------");
+		System.out.println();
+		System.out.println("Indices dos dados do ano "+aYear);
+		for(Integer index : aYearIndexes) {
+			System.out.println(index);
+		}
+		System.out.println();
 	}
 	
 	public void printVector(String v[]) {
