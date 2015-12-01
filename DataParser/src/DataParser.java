@@ -115,8 +115,9 @@ public class DataParser {
 			} else {				
 				tempMin = vLine[vLine.length-1];
 				rainFall = vLine[vLine.length-3];
-				
-				if((!tempMin.isEmpty() && !tempMax.isEmpty()) && (!relMeanHumidity.isEmpty() && !windMeanVelocity.isEmpty()) && !rainFall.isEmpty()) {
+
+				if( ((!tempMin.isEmpty() && !tempMax.isEmpty()) && (!relMeanHumidity.isEmpty() && !windMeanVelocity.isEmpty()) && !rainFall.isEmpty())
+						&& (!tempMin.contains("/") && !tempMax.contains("/") && !relMeanHumidity.contains("/") && !windMeanVelocity.contains("/") && !rainFall.contains("/")) ) {
 					tMin.add(tempMin);
 					tMax.add(tempMax);
 					relHum.add(relMeanHumidity);
@@ -126,13 +127,14 @@ public class DataParser {
 						aYearIndexes.add(indexes);
 					}
 					++indexes;
-//					if(!firstLine) {
-//						bwIFile.write("\n");
-//						bwOFile.write("\n");
-//					} else
-//						firstLine = false;
-//					bwIFile.write(tempMax + " " + tempMin + " " + relMeanHumidity + " " + windMeanVelocity + ";");
-//					bwOFile.write(rainFall + ";");
+
+					//					if(!firstLine) {
+					//						bwIFile.write("\n");
+					//						bwOFile.write("\n");
+					//					} else
+					//						firstLine = false;
+					//					bwIFile.write(tempMax + " " + tempMin + " " + relMeanHumidity + " " + windMeanVelocity + ";");
+					//					bwOFile.write(rainFall + ";");
 				} else { 
 					++counter;
 					invalidDataDates.add(vLine[1]);
