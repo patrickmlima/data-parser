@@ -102,7 +102,7 @@ public class DataParser {
 		String vLine[];
 		int counter = 0;
 		int indexes = 0;
-		String aYear = "31/12/2014";
+		String aYear = "31/12/2010";
 //		boolean firstLine =  true;
 		int turn = 0;
 		while((line = fileReader.readLine()) != null) {
@@ -146,10 +146,11 @@ public class DataParser {
 		inputs.add(tMax);
 		inputs.add(relHum);
 		inputs.add(windVel);
-		for(LinkedList<String> l : inputs) {
-			for(int i = 0; i < l.size(); i++) {
-				bwIFile.write(l.get(i));
-				if((i+1)!=l.size())
+		int W = inputs.size();
+		for(int i=0;i<indexes;++i) {
+			for(int j=0; j<W; ++j) {
+				bwIFile.write(inputs.get(j).get(i));
+				if((j+1)!=W)
 					bwIFile.write(" ");
 				else
 					bwIFile.write(";\n");
@@ -157,10 +158,7 @@ public class DataParser {
 		}
 		for(int i = 0; i < outputs.size(); i++) {
 			bwOFile.write(outputs.get(i));
-			if((i+1)!=outputs.size())
-				bwOFile.write(" ");
-			else
-				bwOFile.write(";\n");
+			bwOFile.write(";\n");
 		}
 		
 		bwIFile.close();
